@@ -11,8 +11,7 @@ import CommonCrypto
 
 public class Identity {
     
-    var certificate: SecCertificate?
-    
+    public private(set) var certificate: SecCertificate?
     
     static let privateTagString = "com.teskalabs.seacat.privateKey"
     static let privateKeyLabel = "SeaCat Identity Private Key"
@@ -20,8 +19,11 @@ public class Identity {
     static let publicTagString = "com.teskalabs.seacat.publicKey"
     static let publicKeyLabel = "SeaCat Identity Public Key"
 
+    weak private var seacat: SeaCat?
     
-    internal func initialize() {
+    internal func postInit(seacat: SeaCat) {
+        
+        self.seacat = seacat
         
         // Initialize the identity
         // The load has to happen in the synchronous way so that we indicate consistently if the identity is usable or nor
@@ -36,10 +38,11 @@ public class Identity {
     
     
     func renew() {
+        guard let seacat = seacat else { return }
         if (certificate == nil) {
-            SeaCat.controller?.onIntialEnrollmentRequested()
+           seacat.controller.onIntialEnrollmentRequested(seacat: seacat)
         } else {
-            SeaCat.controller?.onReenrollmentRequested()
+            seacat.controller.onReenrollmentRequested(seacat: seacat)
         }
     }
     
@@ -262,7 +265,8 @@ public class Identity {
     }
     
     private func enrollCertificateRequest(certificate_request: Data) {
-        var request = URLRequest(url: SeaCat.apiURL!.appendingPathComponent("/enroll"))
+        guard let seacat = seacat else { return }
+        var request = URLRequest(url: seacat.apiURL.appendingPathComponent("/enroll"))
         request.setValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "PUT"
         request.httpBody = certificate_request

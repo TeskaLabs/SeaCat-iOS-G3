@@ -12,8 +12,9 @@ import SeaCat
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+    let seacat: SeaCat = SeaCat(apiURL: "https://pki.seacat.io/seacat-demo/seacat")
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        SeaCat.initialize(apiURL: "https://pki.seacat.io/seacat-demo/seacat")
         return true
     }
 

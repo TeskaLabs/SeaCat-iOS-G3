@@ -10,13 +10,13 @@ import Foundation
 
 public class Controller {
 
-    func onIntialEnrollmentRequested() {
+    func onIntialEnrollmentRequested(seacat: SeaCat) {
         // You may decide to call seacat.identity.enroll() later, when you have more info
-        SeaCat.identity.enroll()
+        seacat.identity.enroll()
     }
 
-    func onReenrollmentRequested() {
+    func onReenrollmentRequested(seacat: SeaCat) {
         // You may decide to call seacat.identity.enroll() later, when you have more info
-        SeaCat.identity.enroll()
+        seacat.identity.enroll()
     }
 }

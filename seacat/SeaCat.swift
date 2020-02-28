@@ -11,17 +11,17 @@ import CommonCrypto
 
 public class SeaCat {
 
-    internal static var controller: Controller? = nil
-    internal static var apiURL: URL? = nil
-    public static let identity: Identity = Identity()
+    internal let controller: Controller
+    internal let apiURL: URL
     
-    private init() {}
-
-    public class func initialize(apiURL: String, controller: Controller? = nil) {
-        if (SeaCat.controller != nil) { return } // Already initialized
-        SeaCat.controller = controller ?? Controller()
-        self.apiURL = URL(string: apiURL)
-        self.identity.initialize()
+    public let identity: Identity = Identity()
+    
+    public init(apiURL: String, controller: Controller? = nil) {
+        self.controller = controller ?? Controller()
+        self.apiURL = URL(string: apiURL) ?? URL(string: "http://incorrect.url/")!
+        
+        identity.postInit(seacat:self)
     }
+
     
 }

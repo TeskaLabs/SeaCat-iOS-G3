@@ -12,14 +12,16 @@ import SeaCat
 class SplashViewController: UIViewController {
 
     var timer: Timer? = nil
+    let seacat = (UIApplication.shared.delegate as! AppDelegate).seacat
     
     override func viewDidLoad() {
         super.viewDidLoad()
     }
 
+    
     override func viewDidAppear(_ animated: Bool) {
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-            if (SeaCat.identity.identity == nil) { return }
+            if (self.seacat.identity.identity == nil) { return }
             self.dismiss(animated: true, completion: nil)
         }
     }

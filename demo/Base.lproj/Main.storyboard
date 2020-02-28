@@ -64,14 +64,32 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Certificate Summary" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s5j-bL-8ao">
+                                <rect key="frame" x="8" y="125" width="398" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JPd-Uh-HPo">
+                                <rect key="frame" x="184" y="231" width="46" height="30"/>
+                                <state key="normal" title="Button"/>
+                                <connections>
+                                    <action selector="onRequestClicked:" destination="Yzt-me-JKl" eventType="touchUpInside" id="bYy-7k-SuP"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="YYb-wT-17N" firstAttribute="trailing" secondItem="Nro-5P-PBX" secondAttribute="trailing" constant="8" id="59q-4Y-lmA"/>
                             <constraint firstItem="luD-7k-Wg3" firstAttribute="top" secondItem="YYb-wT-17N" secondAttribute="top" id="GrJ-Xa-arn"/>
+                            <constraint firstItem="s5j-bL-8ao" firstAttribute="top" secondItem="Nro-5P-PBX" secondAttribute="bottom" constant="8" id="OOh-Nz-0gp"/>
                             <constraint firstItem="luD-7k-Wg3" firstAttribute="leading" secondItem="YYb-wT-17N" secondAttribute="leading" id="Rg8-ZZ-bCF"/>
+                            <constraint firstItem="JPd-Uh-HPo" firstAttribute="centerX" secondItem="0Lj-ay-oyL" secondAttribute="centerX" id="S0G-hw-cad"/>
+                            <constraint firstItem="YYb-wT-17N" firstAttribute="trailing" secondItem="s5j-bL-8ao" secondAttribute="trailing" constant="8" id="a4B-Oc-ma0"/>
                             <constraint firstItem="Nro-5P-PBX" firstAttribute="leading" secondItem="YYb-wT-17N" secondAttribute="leading" constant="8" id="afX-VI-ty4"/>
+                            <constraint firstItem="JPd-Uh-HPo" firstAttribute="top" secondItem="s5j-bL-8ao" secondAttribute="bottom" constant="85" id="azf-2a-uN1"/>
                             <constraint firstItem="Nro-5P-PBX" firstAttribute="top" secondItem="luD-7k-Wg3" secondAttribute="bottom" constant="8" id="cfj-4x-fGS"/>
+                            <constraint firstItem="s5j-bL-8ao" firstAttribute="leading" secondItem="YYb-wT-17N" secondAttribute="leading" constant="8" id="pFK-LZ-gis"/>
                             <constraint firstItem="luD-7k-Wg3" firstAttribute="trailing" secondItem="YYb-wT-17N" secondAttribute="trailing" id="qqT-4Y-xjb"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="YYb-wT-17N"/>
@@ -79,6 +97,7 @@
                     <navigationItem key="navigationItem" title="SeaCat" id="f9Q-wk-3IZ"/>
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
+                        <outlet property="certSummaryLabel" destination="s5j-bL-8ao" id="gXD-5H-0ce"/>
                         <outlet property="identityLabel" destination="Nro-5P-PBX" id="0UT-dF-Rxe"/>
                         <segue destination="BYZ-38-t0r" kind="presentation" identifier="SplashScreenSeque" id="LMw-uR-6y2"/>
                     </connections>
