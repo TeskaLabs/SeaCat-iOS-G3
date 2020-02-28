@@ -23,5 +23,13 @@ public class SeaCat {
         identity.postInit(seacat:self)
     }
 
+    public func createURLSession(configuration: URLSessionConfiguration = URLSessionConfiguration.default, delegateQueue queue: OperationQueue? = nil) -> URLSession {
+        return URLSession(
+            configuration: configuration,
+            delegate: SeaCatURLSessionDelegate(seacat: self),
+            delegateQueue: queue
+        )
+
+    }
     
 }

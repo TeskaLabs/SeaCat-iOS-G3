@@ -23,6 +23,7 @@
 		DB6A4E502406E9E8008E3075 /* Controller.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6A4E4F2406E9E8008E3075 /* Controller.swift */; };
 		DB6A4E5124070D11008E3075 /* PeerProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6A4E4D2406E5A0008E3075 /* PeerProvider.swift */; };
 		DB6A4E5324071FDF008E3075 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6A4E5224071FDF008E3075 /* MainViewController.swift */; };
+		DBD2E4D92409C42E00A023F1 /* URLSessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBD2E4D82409C42E00A023F1 /* URLSessionDelegate.swift */; };
 		DBF2EC502406E1690047F94E /* seacat.h in Headers */ = {isa = PBXBuildFile; fileRef = DBF2EC4E2406E1690047F94E /* seacat.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
@@ -67,6 +68,7 @@
 		DB6A4E4D2406E5A0008E3075 /* PeerProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeerProvider.swift; sourceTree = "<group>"; };
 		DB6A4E4F2406E9E8008E3075 /* Controller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Controller.swift; sourceTree = "<group>"; };
 		DB6A4E5224071FDF008E3075 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		DBD2E4D82409C42E00A023F1 /* URLSessionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionDelegate.swift; sourceTree = "<group>"; };
 		DBF2EC4B2406E1690047F94E /* SeaCat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SeaCat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBF2EC4E2406E1690047F94E /* seacat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = seacat.h; sourceTree = "<group>"; };
 		DBF2EC4F2406E1690047F94E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -160,6 +162,7 @@
 				DBF2EC4E2406E1690047F94E /* seacat.h */,
 				DB6A4E422406E293008E3075 /* SeaCat.swift */,
 				DB6A4E452406E2C3008E3075 /* Utils.swift */,
+				DBD2E4D82409C42E00A023F1 /* URLSessionDelegate.swift */,
 			);
 			path = seacat;
 			sourceTree = "<group>";
@@ -294,6 +297,7 @@
 				DB6A4E432406E293008E3075 /* MiniASN1_DER.swift in Sources */,
 				DB6A4E462406E2C3008E3075 /* Utils.swift in Sources */,
 				DB6A4E4C2406E4D7008E3075 /* Base32.swift in Sources */,
+				DBD2E4D92409C42E00A023F1 /* URLSessionDelegate.swift in Sources */,
 				DB6A4E492406E3E4008E3075 /* Identity.swift in Sources */,
 				DB6A4E502406E9E8008E3075 /* Controller.swift in Sources */,
 			);

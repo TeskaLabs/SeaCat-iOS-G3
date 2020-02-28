@@ -55,18 +55,13 @@ class MainViewController: UIViewController {
 
     private func update() {
         self.identityLabel.text = String(format: "Identity: %@", seacat.identity.identity ?? "-")
-        if let certificate = seacat.identity.certificate {
-            let summary = SecCertificateCopySubjectSummary(certificate)! as String
-            self.certSummaryLabel.text = summary
-        } else {
-            self.certSummaryLabel.text = "-"
-        }
     }
     
     @IBAction func onRequestClicked(_ sender: Any) {
-        let url = URL(string: "http://www.stackoverflow.com")!
-
-        let task = URLSession.shared.dataTask(with: url) {(data, response, error) in
+        let url = URL(string: "https://example.com/test")!
+        
+        let session = seacat.createURLSession()
+        let task = session.dataTask(with: url) {(data, response, error) in
             guard let data = data else { return }
             print(String(data: data, encoding: .utf8)!)
         }
