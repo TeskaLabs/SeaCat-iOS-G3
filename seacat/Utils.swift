@@ -64,16 +64,12 @@ func SeaCatIdentity(public_key: SecKey) -> String? {
     // For an elliptic curve public key, the format follows the ANSI X9.63 standard using a byte string of 04 || X || Y.
     let public_key_encoded = SecKeyCopyExternalRepresentation(public_key, &error)! as Data
     var hash = [UInt8](repeating: 0,  count: Int(CC_SHA384_DIGEST_LENGTH))
-    public_key_encoded.withUnsafeBytes {
-        _ = CC_SHA384($0, CC_LONG(public_key_encoded.count), &hash)
-        
-    }
-    let d = Data(hash)
-    let s = d.withUnsafeBytes {
-        base32encode(UnsafeRawPointer($0), d.count)
-    }
     
-    return String(s[String.Index(encodedOffset: 0)..<String.Index(encodedOffset: 16)])
+    public_key_encoded.withUnsafeBytes {
+        _ = CC_SHA384($0.baseAddress, CC_LONG(public_key_encoded.count), &hash)
+    }
+    let s = base32encode(hash, Int(CC_SHA384_DIGEST_LENGTH))
+    return String(s.prefix(16))
 }
 
 func SeaCatIdentity(private_key: SecKey) -> String? {
