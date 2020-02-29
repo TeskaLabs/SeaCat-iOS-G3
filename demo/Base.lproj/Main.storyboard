@@ -71,8 +71,8 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JPd-Uh-HPo">
-                                <rect key="frame" x="184" y="231" width="46" height="30"/>
-                                <state key="normal" title="Button"/>
+                                <rect key="frame" x="164" y="231" width="86" height="30"/>
+                                <state key="normal" title="GET request"/>
                                 <connections>
                                     <action selector="onRequestClicked:" destination="Yzt-me-JKl" eventType="touchUpInside" id="bYy-7k-SuP"/>
                                 </connections>
