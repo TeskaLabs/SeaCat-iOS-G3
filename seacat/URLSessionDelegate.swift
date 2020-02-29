@@ -8,10 +8,10 @@
 
 import Foundation
 
-public class SeaCatURLSessionDelegate: NSObject, URLSessionDelegate {
+open class SeaCatURLSessionDelegate: NSObject, URLSessionDelegate {
     let seacat: SeaCat
     
-    init(seacat: SeaCat) {
+    public init(seacat: SeaCat) {
         self.seacat = seacat
     }
 
