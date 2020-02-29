@@ -1,5 +1,5 @@
 //
-//  URLSessionDelegate.swift
+//  SeaCatURLSessionDelegate.swift
 //  SeaCat
 //
 //  Created by Ales Teska on 28.2.20.
@@ -23,6 +23,7 @@ open class SeaCatURLSessionDelegate: NSObject, URLSessionDelegate {
             completionHandler(.useCredential, getClientCertificateURLCredential())
 
         } else if authenticationMethod == NSURLAuthenticationMethodServerTrust {
+            //TODO: Validate the server certificate
             completionHandler(.performDefaultHandling, nil)
         }
     }
