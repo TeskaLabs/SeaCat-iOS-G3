@@ -15,15 +15,13 @@ class MainViewController: UIViewController {
 
     @IBOutlet weak var identityLabel: UILabel!
     @IBOutlet weak var certSummaryLabel: UILabel!
-
-    let seacat = (UIApplication.shared.delegate as! AppDelegate).seacat
     
     override func viewDidLoad() {
         super.viewDidLoad()
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        if (seacat.identity.identity == nil) {
+        if (SeaCat.identity?.identity == nil) {
             performSegue(withIdentifier: "SplashScreenSeque", sender: self)
         }
         
@@ -43,8 +41,8 @@ class MainViewController: UIViewController {
         )
 
         refreshAlert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (action: UIAlertAction!) in
-            self.seacat.identity.revoke()
-            self.seacat.identity.enroll()
+            SeaCat.identity?.revoke()
+            SeaCat.identity?.enroll()
             self.performSegue(withIdentifier: "SplashScreenSeque", sender: self)
         }))
 
@@ -54,13 +52,13 @@ class MainViewController: UIViewController {
     }
 
     private func update() {
-        self.identityLabel.text = String(format: "Identity: %@", seacat.identity.identity ?? "-")
+        self.identityLabel.text = String(format: "Identity: %@", SeaCat.identity?.identity ?? "-")
     }
     
     @IBAction func onRequestClicked(_ sender: Any) {
-        let url = URL(string: "https://example.com/test")!
+        let url = URL(string: "https://zscanner.seacat.io/medicalc/v3.1/departments")!
         
-        let session = seacat.createURLSession()
+        guard let session = SeaCat.createURLSession() else { return }
         let task = session.dataTask(with: url) {(data, response, error) in
             guard let data = data else { return }
             print(String(data: data, encoding: .utf8)!)
