@@ -15,6 +15,10 @@ public class SeaCat {
     internal let apiURL: URL
     public let identity: Identity
     
+    static public var identity: Identity? {
+        guard let seacat = main else { return nil }
+        return seacat.identity
+    }
     
     /// Initialization & configuration
     
@@ -54,7 +58,7 @@ public class SeaCat {
 
     }
 
-    class func createURLSession(configuration: URLSessionConfiguration = URLSessionConfiguration.default, delegateQueue queue: OperationQueue? = nil) -> URLSession? {
+    class public func createURLSession(configuration: URLSessionConfiguration = URLSessionConfiguration.default, delegateQueue queue: OperationQueue? = nil) -> URLSession? {
         guard let seacat = main else { return nil }
         return seacat.createURLSession(configuration: configuration, delegateQueue: queue)
     }
