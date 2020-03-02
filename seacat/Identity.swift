@@ -1,6 +1,6 @@
 //
 //  Identity.swift
-//  seacat
+//  SeaCat
 //
 //  Created by Ales Teska on 26.2.20.
 //  Copyright © 2020 TeskaLabs. All rights reserved.
@@ -10,8 +10,6 @@ import Foundation
 import CommonCrypto
 
 public class Identity {
-    
-    public private(set) var certificate: SecCertificate?
     
     static let privateTagString = "com.teskalabs.seacat.privateKey"
     static let privateKeyLabel = "SeaCat Identity Private Key"
@@ -100,6 +98,19 @@ public class Identity {
     }
 
     
+    public func enroll() {
+        // Get an existing identity keypair or generate a new one
+        guard let keypair = generateECKeyPair(
+            publicKeyTag: Identity.publicTagString,
+            publicKeyLabel: Identity.publicKeyLabel,
+            privateKeyTag: Identity.publicTagString,
+            privateLabel: Identity.privateKeyLabel)
+            else { return }
+        guard let cr = buildCertificateRequest(privateKey: keypair.0, publicKey: keypair.1) else { return }
+        enrollCertificateRequest(certificate_request: cr)
+    }
+
+    
     public func revoke() {
         var status:OSStatus
 
@@ -169,6 +180,7 @@ public class Identity {
             status = SecItemDelete(query3 as CFDictionary)
         } while (status == 0)
 
+        //TODO: Send a revocation info to a SeaCat PKI
     }
     
     
@@ -178,40 +190,6 @@ public class Identity {
         return true
     }
     
-    private func generateKeyPair() -> (SecKey, SecKey)? {
-        var publicKey: SecKey?
-        var privateKey: SecKey?
-
-        let privateTag = Identity.privateTagString.data(using: .utf8)!
-        let privateKeyParameters : [String : AnyObject] = [
-            kSecAttrIsPermanent as String : true as AnyObject,
-            kSecAttrApplicationTag as String : privateTag as AnyObject,
-            kSecAttrLabel as String: Identity.privateKeyLabel as AnyObject,
-        ]
-        
-        let publicTag = Identity.publicTagString.data(using: .utf8)!
-        let publicKeyParameters : [String : AnyObject] = [
-            kSecAttrIsPermanent as String : false as AnyObject,
-            kSecAttrApplicationTag as String : publicTag as AnyObject,
-            kSecAttrLabel as String: Identity.publicKeyLabel as AnyObject,
-        ]
-        
-        let keyPairParameters : [String : AnyObject] = [
-            kSecAttrKeySizeInBits as String : 256 as AnyObject,
-            kSecAttrKeyType as String : kSecAttrKeyTypeEC,
-            kSecPrivateKeyAttrs as String : privateKeyParameters as AnyObject,
-            kSecPublicKeyAttrs as String : publicKeyParameters as AnyObject
-        ]
-        
-        let status = SecKeyGeneratePair(keyPairParameters as CFDictionary, &publicKey, &privateKey)
-        if status != noErr
-        {
-            print("Key generation error:", status)
-            return nil
-        }
-        
-        return (privateKey!, publicKey!)
-    }
     
     private func buildCertificateRequest(privateKey: SecKey, publicKey: SecKey) -> Data? {
         var error: Unmanaged<CFError>?
@@ -263,6 +241,7 @@ public class Identity {
             MiniASN1DER.OCTET_STRING(signature)
         ]))
     }
+    
     
     private func enrollCertificateRequest(certificate_request: Data) {
         guard let seacat = seacat else { return }
@@ -327,18 +306,13 @@ public class Identity {
 
         }.resume()
     }
-
     
-    public func enroll() {
-        // Get an existing identity keypair or generate a new one
-        guard let keypair = generateKeyPair() else { return }
-        guard let cr = buildCertificateRequest(privateKey: keypair.0, publicKey: keypair.1) else { return }
-        enrollCertificateRequest(certificate_request: cr)
-    }
-
 
     /// Cryptographically calculated identity of the application instance
     ///
+    
+    public private(set) var certificate: SecCertificate?
+    
     public var identity: String? {
         guard let certificate = self.certificate else { return nil }
         return SeaCatIdentity(certificate: certificate)
