@@ -124,8 +124,12 @@ struct MiniASN1DER {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyMMddHHmmss'Z'"
         formatter.timeZone = TimeZone(abbreviation: "UTC")
+        
+        // It has been reported that on some iOS devices AM/PM is still part
+        // of the output even though dateFormat doesn't contain an 'a' symbol
         formatter.amSymbol = ""
         formatter.pmSymbol = ""
+        
         let s = formatter.string(from: value)
         let b = s.data(using: .ascii)!
         
