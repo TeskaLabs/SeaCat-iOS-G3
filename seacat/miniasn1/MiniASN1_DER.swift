@@ -122,8 +122,11 @@ struct MiniASN1DER {
     
     static func UTCTime(_ value: Date) -> [UInt8] {
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyMMddHHmmss"
-        let s = formatter.string(from: value) + "Z"
+        formatter.dateFormat = "yyMMddHHmmss'Z'"
+        formatter.timeZone = TimeZone(abbreviation: "UTC")
+        formatter.amSymbol = ""
+        formatter.pmSymbol = ""
+        let s = formatter.string(from: value)
         let b = s.data(using: .ascii)!
         
         return il(tag: 23, length: UInt(b.count)) + b
