@@ -122,7 +122,7 @@ struct MiniASN1DER {
     
     static func UTCTime(_ value: Date) -> [UInt8] {
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyMMddHHmmssa'Z'"
+        formatter.dateFormat = "yyMMddHHmmss'Z'"
         formatter.timeZone = TimeZone(abbreviation: "UTC")
         
         // It has been reported that on some iOS devices AM/PM is still part
@@ -130,7 +130,7 @@ struct MiniASN1DER {
         formatter.amSymbol = ""
         formatter.pmSymbol = ""
         
-        let s = formatter.string(from: value)
+        let s = formatter.string(from: value).trimmingCharacters(in:.whitespacesAndNewlines)
         let b = s.data(using: .ascii)!
         
         return il(tag: 23, length: UInt(b.count)) + b
