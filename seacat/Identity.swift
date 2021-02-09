@@ -103,9 +103,13 @@ public class Identity {
         guard let keypair = generateECKeyPair(
             publicKeyTag: Identity.publicTagString,
             publicKeyLabel: Identity.publicKeyLabel,
-            privateKeyTag: Identity.publicTagString,
+            privateKeyTag: Identity.privateTagString,
             privateLabel: Identity.privateKeyLabel)
-            else { return }
+        else {
+            print("Key pair generation failed")
+            return
+        }
+        
         guard let cr = buildCertificateRequest(privateKey: keypair.0, publicKey: keypair.1) else { return }
         enrollCertificateRequest(certificate_request: cr)
     }
@@ -354,6 +358,8 @@ public class Identity {
         let privateTag = Identity.privateTagString.data(using: .utf8)!
         let getquery: [String: Any] = [
             kSecClass as String: kSecClassKey,
+            kSecAttrKeyClass as String: kSecAttrKeyClassPrivate,
+            kSecAttrKeyType as String : kSecAttrKeyTypeEC,
             kSecAttrApplicationTag as String: privateTag as AnyObject,
             kSecReturnRef as String: true
         ]
