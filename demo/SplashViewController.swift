@@ -23,8 +23,9 @@ class SplashViewController: UIViewController {
         // SeaCat needs to do an initial enrolment to acquire the identity
         // This action can take a brief moment when the application is launched for a first time
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-            if (SeaCat.ready) { return }
-            self.dismiss(animated: true, completion: nil)
+            if (SeaCat.ready) {
+                self.dismiss(animated: true, completion: nil)
+            }
         }
     }
 

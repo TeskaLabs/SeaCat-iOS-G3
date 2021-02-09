@@ -106,15 +106,10 @@ public class Identity {
         guard let keypair = generateECKeyPair(
             publicKeyTag: Identity.publicTagString,
             publicKeyLabel: Identity.publicKeyLabel,
-            privateKeyTag: Identity.publicTagString,
+            privateKeyTag: Identity.privateTagString,
             privateLabel: Identity.privateKeyLabel)
         else {
             print("Key pair generation failed")
-            return
-        }
-        
-        guard let _privatekey = privateKey else {
-            print("Private key after generation has not been found :-(")
             return
         }
         
