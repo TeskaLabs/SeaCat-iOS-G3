@@ -15,22 +15,10 @@ func generateECKeyPair(publicKeyTag: String, publicKeyLabel: String, privateKeyT
     guard let publicTag = publicKeyTag.data(using: .utf8) else { return nil }
     guard let privateTag = privateKeyTag.data(using: .utf8) else { return nil }
     
-//    let flags:SecAccessControlCreateFlags = [
-//        SecAccessControlCreateFlags.userPresence
-//    ]
-//
-//    guard let accessControlRef = SecAccessControlCreateWithFlags(
-//        nil,
-//        kSecAttrAccessibleWhenUnlocked,
-//        flags,
-//        nil
-//    ) else { return nil }
-
     let privateKeyParameters : [String : Any] = [
         kSecAttrIsPermanent as String : true,
         kSecAttrApplicationTag as String : privateTag,
         kSecAttrLabel as String: privateLabel,
-//        kSecAttrAccessControl as String: accessControlRef,
     ]
     
     let publicKeyParameters : [String : Any] = [
