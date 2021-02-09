@@ -47,7 +47,10 @@ public class Identity {
     
     private func load() -> Bool {
         // Load an identity private key
-        guard let privatekey = privateKey else { return false }
+        guard let privatekey = privateKey else {
+            print("Private key not found")
+            return false
+        }
 
         guard let private_key_identity = SeaCatIdentity(private_key: privatekey) else {
             return false
@@ -105,7 +108,16 @@ public class Identity {
             publicKeyLabel: Identity.publicKeyLabel,
             privateKeyTag: Identity.publicTagString,
             privateLabel: Identity.privateKeyLabel)
-            else { return }
+        else {
+            print("Key pair generation failed")
+            return
+        }
+        
+        guard let _privatekey = privateKey else {
+            print("Private key after generation has not been found :-(")
+            return
+        }
+        
         guard let cr = buildCertificateRequest(privateKey: keypair.0, publicKey: keypair.1) else { return }
         enrollCertificateRequest(certificate_request: cr)
     }
@@ -354,6 +366,8 @@ public class Identity {
         let privateTag = Identity.privateTagString.data(using: .utf8)!
         let getquery: [String: Any] = [
             kSecClass as String: kSecClassKey,
+            kSecAttrKeyClass as String: kSecAttrKeyClassPrivate,
+            kSecAttrKeyType as String : kSecAttrKeyTypeEC,
             kSecAttrApplicationTag as String: privateTag as AnyObject,
             kSecReturnRef as String: true
         ]
