@@ -125,6 +125,10 @@ struct MiniASN1DER {
         formatter.dateFormat = "yyMMddHHmmss'Z'"
         formatter.timeZone = TimeZone(abbreviation: "UTC")
         
+        // Recommended for fixed format dates
+        // https://developer.apple.com/documentation/foundation/dateformatter
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        
         // It has been reported that on some iOS devices AM/PM is still part
         // of the output even though dateFormat doesn't contain an 'a' symbol
         formatter.amSymbol = ""
