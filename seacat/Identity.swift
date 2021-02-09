@@ -47,10 +47,7 @@ public class Identity {
     
     private func load() -> Bool {
         // Load an identity private key
-        guard let privatekey = privateKey else {
-            print("Private key not found")
-            return false
-        }
+        guard let privatekey = privateKey else { return false }
 
         guard let private_key_identity = SeaCatIdentity(private_key: privatekey) else {
             return false
