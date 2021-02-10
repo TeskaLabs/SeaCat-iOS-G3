@@ -129,7 +129,7 @@ struct MiniASN1DER {
         formatter.timeZone = TimeZone(abbreviation: "UTC")
         formatter.locale = Locale(identifier: "en_US_POSIX")
         
-        let s = formatter.string(from: value).trimmingCharacters(in:.whitespacesAndNewlines)
+        let s = formatter.string(from: value)
         let b = s.data(using: .ascii)!
         
         return il(tag: 23, length: UInt(b.count)) + b
