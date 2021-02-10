@@ -122,8 +122,14 @@ struct MiniASN1DER {
     
     static func UTCTime(_ value: Date) -> [UInt8] {
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyMMddHHmmss"
-        let s = formatter.string(from: value) + "Z"
+        formatter.dateFormat = "yyMMddHHmmss'Z'"
+        
+        // Setup for fixed format dates
+        // as per https://developer.apple.com/documentation/foundation/dateformatter
+        formatter.timeZone = TimeZone(abbreviation: "UTC")
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        
+        let s = formatter.string(from: value)
         let b = s.data(using: .ascii)!
         
         return il(tag: 23, length: UInt(b.count)) + b
