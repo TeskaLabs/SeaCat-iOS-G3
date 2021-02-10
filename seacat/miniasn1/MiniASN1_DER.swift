@@ -123,16 +123,11 @@ struct MiniASN1DER {
     static func UTCTime(_ value: Date) -> [UInt8] {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyMMddHHmmss'Z'"
+        
+        // Setup for fixed format dates
+        // as per https://developer.apple.com/documentation/foundation/dateformatter
         formatter.timeZone = TimeZone(abbreviation: "UTC")
-        
-        // Recommended for fixed format dates
-        // https://developer.apple.com/documentation/foundation/dateformatter
         formatter.locale = Locale(identifier: "en_US_POSIX")
-        
-        // It has been reported that on some iOS devices AM/PM is still part
-        // of the output even though dateFormat doesn't contain an 'a' symbol
-        formatter.amSymbol = ""
-        formatter.pmSymbol = ""
         
         let s = formatter.string(from: value).trimmingCharacters(in:.whitespacesAndNewlines)
         let b = s.data(using: .ascii)!
