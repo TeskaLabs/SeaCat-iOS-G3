@@ -25,7 +25,6 @@
 		DB6A4E5324071FDF008E3075 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6A4E5224071FDF008E3075 /* MainViewController.swift */; };
 		DBC09893240D72A200648895 /* ECKeyGen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC09892240D72A200648895 /* ECKeyGen.swift */; };
 		DBD2E4D92409C42E00A023F1 /* URLSessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBD2E4D82409C42E00A023F1 /* URLSessionDelegate.swift */; };
-		DBF2EC502406E1690047F94E /* seacat.h in Headers */ = {isa = PBXBuildFile; fileRef = DBF2EC4E2406E1690047F94E /* seacat.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,7 +71,6 @@
 		DBC09892240D72A200648895 /* ECKeyGen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ECKeyGen.swift; sourceTree = "<group>"; };
 		DBD2E4D82409C42E00A023F1 /* URLSessionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionDelegate.swift; sourceTree = "<group>"; };
 		DBF2EC4B2406E1690047F94E /* SeaCat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SeaCat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DBF2EC4E2406E1690047F94E /* seacat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = seacat.h; sourceTree = "<group>"; };
 		DBF2EC4F2406E1690047F94E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -162,7 +160,6 @@
 				DB6A4E4F2406E9E8008E3075 /* Controller.swift */,
 				DB6A4E482406E3E4008E3075 /* Identity.swift */,
 				DB6A4E4D2406E5A0008E3075 /* PeerProvider.swift */,
-				DBF2EC4E2406E1690047F94E /* seacat.h */,
 				DB6A4E422406E293008E3075 /* SeaCat.swift */,
 				DB6A4E452406E2C3008E3075 /* Utils.swift */,
 				DBD2E4D82409C42E00A023F1 /* URLSessionDelegate.swift */,
@@ -177,7 +174,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DBF2EC502406E1690047F94E /* seacat.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
