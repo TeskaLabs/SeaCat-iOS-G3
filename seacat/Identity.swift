@@ -13,11 +13,18 @@ public class Identity {
     
     static let privateTagString = "com.teskalabs.seacat.privateKey"
     static let privateKeyLabel = "SeaCat Identity Private Key"
-
+    
     static let publicTagString = "com.teskalabs.seacat.publicKey"
     static let publicKeyLabel = "SeaCat Identity Public Key"
-
+    
     weak private var seacat: SeaCat?
+    
+    private var timer: Timer?
+    
+    deinit {
+        timer?.invalidate()
+        timer = nil
+    }
     
     internal func postInit(seacat: SeaCat) {
         
@@ -26,11 +33,20 @@ public class Identity {
         // Initialize the identity
         // The load has to happen in the synchronous way so that we indicate consistently if the identity is usable or nor
         if (load()) {
-            let _ = verify()
+            checkRenewal()
         } else {
             DispatchQueue.global(qos: .background).async {
                 self.renew()
             }
+        }
+        
+        // Invalidate any existing timer
+        timer?.invalidate()
+
+        // Schedule a new timer
+        let interval = 6 * 60 * 60 // 6 hours in seconds
+        timer = Timer.scheduledTimer(withTimeInterval: TimeInterval(interval), repeats: true) { [weak self] _ in
+            self?.checkRenewal()
         }
     }
     
@@ -38,7 +54,7 @@ public class Identity {
     func renew() {
         guard let seacat = seacat else { return }
         if (certificate == nil) {
-           seacat.controller.onIntialEnrollmentRequested(seacat: seacat)
+            seacat.controller.onIntialEnrollmentRequested(seacat: seacat)
         } else {
             seacat.controller.onReenrollmentRequested(seacat: seacat)
         }
@@ -48,11 +64,11 @@ public class Identity {
     private func load() -> Bool {
         // Load an identity private key
         guard let privatekey = privateKey else { return false }
-
+        
         guard let private_key_identity = SeaCatIdentity(private_key: privatekey) else {
             return false
         }
-
+        
         // Scan the keychain and find an identity certificate
         let query: [String: Any] = [
             kSecClass as String: kSecClassCertificate,
@@ -85,51 +101,57 @@ public class Identity {
             print("Identity certificate for \(private_key_identity) not found.")
             return false
         }
-
-//        NotificationCenter.default.post(
-//            name: Keyote.Notification.identitySet,
-//            object: nil,
-//            userInfo: [
-//                "identity": self.identity as Any
-//            ]
-//        )
+        
+        //        NotificationCenter.default.post(
+        //            name: Keyote.Notification.identitySet,
+        //            object: nil,
+        //            userInfo: [
+        //                "identity": self.identity as Any
+        //            ]
+        //        )
         
         return true
     }
-
+    
     
     public func enroll() {
-        // Get an existing identity keypair or generate a new one
-        guard let keypair = generateECKeyPair(
-            publicKeyTag: Identity.publicTagString,
-            publicKeyLabel: Identity.publicKeyLabel,
-            privateKeyTag: Identity.privateTagString,
-            privateLabel: Identity.privateKeyLabel)
-        else {
-            print("Key pair generation failed")
-            return
-        }
         
-        guard let cr = buildCertificateRequest(privateKey: keypair.0, publicKey: keypair.1) else { return }
+        var keypair = keypair;
+        
+        if (keypair == nil) {
+            // Get an existing identity keypair or generate a new one
+            keypair = generateECKeyPair(
+                publicKeyTag: Identity.publicTagString,
+                publicKeyLabel: Identity.publicKeyLabel,
+                privateKeyTag: Identity.privateTagString,
+                privateLabel: Identity.privateKeyLabel)
+            
+            if (keypair == nil) {
+                print("Key pair generation failed")
+                return
+            }
+        }
+            
+        guard let cr = buildCertificateRequest(privateKey: keypair!.0, publicKey: keypair!.1) else { return }
         enrollCertificateRequest(certificate_request: cr)
     }
-
+    
     
     public func revoke() {
         var status:OSStatus
-
+        
         let private_key = privateKey
         
         var p_identity: String?
         if (private_key != nil) {
             p_identity = SeaCatIdentity(private_key: private_key!)
         }
-
+        
         self.certificate = nil
         
         // Remove the identity certificate
         if (p_identity != nil) {
-
+            
             let query:[String: Any] = [
                 kSecClass as String: kSecClassCertificate,
                 kSecReturnAttributes as String: kCFBooleanTrue as Any,
@@ -183,21 +205,87 @@ public class Identity {
             ]
             status = SecItemDelete(query3 as CFDictionary)
         } while (status == 0)
-
+        
         //TODO: Send a revocation info to a SeaCat PKI
     }
     
     
     // Check validity of the identity certificate
-    func verify() -> Bool {
-        //TODO: This ...
-        return true
+    private func checkRenewal() {
+        guard let certificate = self.certificate else { return }
+        
+        // Parse notBefore and notAfter from the certificate
+        let data = SecCertificateCopyData(certificate) as Data
+        
+        guard let tbsCertificate = parseASN1SEQUENCE(input: data) else {
+            return;
+        }
+
+        guard let body = parseASN1SEQUENCE(input: tbsCertificate) else {
+            return;
+        }
+        
+        guard let (_, d1) = parseASN1Item(input: body) else {
+            return;
+        }
+        
+        guard let (_, d2) = parseASN1Item(input: d1) else {
+            return;
+        }
+
+        guard let (_, d3) = parseASN1Item(input: d2) else {
+            return;
+        }
+
+        guard let (_, d4) = parseASN1Item(input: d3) else {
+            return;
+        }
+
+        guard let (validitySeq, _) = parseASN1Item(input: d4) else {
+            return;
+        }
+
+        guard let validity = parseASN1SEQUENCE(input: validitySeq) else {
+            return;
+        }
+
+        guard let (notBeforeData, d5) = parseASN1Item(input: validity) else {
+            return;
+        }
+
+        guard let (notAfterData, _) = parseASN1Item(input: d5) else {
+            return;
+        }
+
+        guard let notBefore = parseASN1UTCTime(notBeforeData) else {
+            return;
+        }
+
+        guard let notAfter = parseASN1UTCTime(notAfterData) else {
+            return;
+        }
+
+        let now = Date()
+
+        // Calculate the halfway point of the certificate's valid period
+        let halfLife = (notAfter.timeIntervalSince1970 - notBefore.timeIntervalSince1970) / 2.0
+        let thirtyDaysInSeconds: TimeInterval = 30 * 24 * 60 * 60 // ch 30 days
+
+        // Check if the current time is after half of the certificate's lifetime
+        // or within 30 days of the certificate's expiration
+        if now.timeIntervalSince1970 > (notAfter.timeIntervalSince1970 - halfLife) ||
+           now.timeIntervalSince1970 > (notAfter.timeIntervalSince1970 - thirtyDaysInSeconds) {
+            DispatchQueue.global(qos: .background).async {
+                self.renew()
+            }
+        }
+
     }
     
     
     private func buildCertificateRequest(privateKey: SecKey, publicKey: SecKey) -> Data? {
         var error: Unmanaged<CFError>?
-
+        
         let public_key_encoded = SecKeyCopyExternalRepresentation(publicKey, &error)! as Data
         
         let created_at = Date()
@@ -216,11 +304,11 @@ public class Identity {
                 MiniASN1DER.SEQUENCE([ // algorithm
                     MiniASN1DER.OBJECT_IDENTIFIER("1.2.840.10045.2.1"), // ecPublicKey (ANSI X9.62 public key type)
                     MiniASN1DER.OBJECT_IDENTIFIER("1.2.840.10045.3.1.7") // prime256v1 (ANSI X9.62 named elliptic curve)
-                ]),
+                                     ]),
                 MiniASN1DER.BIT_STRING(public_key_encoded), //subjectPublicKey
-            ]),
+                                 ]),
             MiniASN1DER.SEQUENCE_OF([ // Parameters
-            ])
+                                    ])
         ])
         tbsRequest[0] = 0xA0
         
@@ -236,7 +324,7 @@ public class Identity {
             return nil
         }
         let signature = cfSignature as Data
-
+        
         return Data(MiniASN1DER.SEQUENCE([
             tbsRequest,
             MiniASN1DER.SEQUENCE([
@@ -290,7 +378,7 @@ public class Identity {
                 print("The identity of my private key doesn't match with an identity of a certificate we received (enrollment): \(c_identity) != \(p_identity)")
                 return
             }
-
+            
             // Store the certificate in the system keychain
             let addquery: [String: Any] = [
                 kSecClass as String: kSecClassCertificate,
@@ -302,16 +390,16 @@ public class Identity {
                 print("Cannot store Keyote Identity Certificate in a keychain")
                 return
             }
-
+            
             if (!self.load()) {
                 print("Cannot load a freshly received identity")
                 return
             }
-
+            
         }.resume()
     }
     
-
+    
     /// Cryptographically calculated identity of the application instance
     ///
     
@@ -321,7 +409,7 @@ public class Identity {
         guard let certificate = self.certificate else { return nil }
         return SeaCatIdentity(certificate: certificate)
     }
-
+    
     
     /// Return Apple SecIdentity, which is a combination of the certificate and the private key
     ///
@@ -352,7 +440,7 @@ public class Identity {
 #endif
         return identity
     }
-
+    
     
     var privateKey: SecKey? {
         let privateTag = Identity.privateTagString.data(using: .utf8)!
@@ -370,5 +458,14 @@ public class Identity {
         }
         return (item as! SecKey)
     }
-
+    
+    
+    var keypair: (SecKey, SecKey)? {
+        guard let privateKey = privateKey else { return nil }
+        guard let publicKey = SecKeyCopyPublicKey(privateKey) else {
+            return nil
+        }
+        return (privateKey, publicKey)
+    }
+    
 }
