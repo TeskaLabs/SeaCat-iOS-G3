@@ -50,6 +50,12 @@ class MainViewController: UIViewController {
 
         present(refreshAlert, animated: true, completion: nil)
     }
+    
+    
+    @IBAction func onRenewClicked(_ sender: Any) {
+        SeaCat.identity?.enroll()
+    }
+    
 
     private func update() {
         self.identityLabel.text = String(format: "Identity: %@", SeaCat.identity?.identity ?? "-")

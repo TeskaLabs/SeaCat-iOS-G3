@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DB5101CD2B3208320011B2D1 /* MiniASN1_Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB5101CC2B3208320011B2D1 /* MiniASN1_Parser.swift */; };
 		DB6A4E2A2406E1E8008E3075 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6A4E292406E1E8008E3075 /* AppDelegate.swift */; };
 		DB6A4E2C2406E1E8008E3075 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6A4E2B2406E1E8008E3075 /* SceneDelegate.swift */; };
 		DB6A4E2E2406E1E8008E3075 /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6A4E2D2406E1E8008E3075 /* SplashViewController.swift */; };
@@ -52,6 +53,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		DB5101CC2B3208320011B2D1 /* MiniASN1_Parser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniASN1_Parser.swift; sourceTree = "<group>"; };
 		DB6A4E272406E1E8008E3075 /* demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB6A4E292406E1E8008E3075 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DB6A4E2B2406E1E8008E3075 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -119,6 +121,7 @@
 			isa = PBXGroup;
 			children = (
 				DB6A4E412406E293008E3075 /* MiniASN1_DER.swift */,
+				DB5101CC2B3208320011B2D1 /* MiniASN1_Parser.swift */,
 			);
 			path = miniasn1;
 			sourceTree = "<group>";
@@ -291,6 +294,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB5101CD2B3208320011B2D1 /* MiniASN1_Parser.swift in Sources */,
 				DB6A4E442406E293008E3075 /* SeaCat.swift in Sources */,
 				DB6A4E5124070D11008E3075 /* PeerProvider.swift in Sources */,
 				DB6A4E432406E293008E3075 /* MiniASN1_DER.swift in Sources */,
