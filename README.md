@@ -8,7 +8,7 @@ SeaCat SDK for iOS (3rd generation)
 [CocoaPods](https://cocoapods.org) is a dependency manager for Cocoa projects. For usage and installation instructions, visit their website. To integrate SeaCat into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
-pod 'SeaCat', '~> 23.12.01'
+pod 'SeaCat', '~> 24.24.01'
 ```
 
 ### Swift Package Manager
@@ -19,14 +19,14 @@ Once you have your Swift package set up, adding SeaCat as a dependency is as eas
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/TeskaLabs/SeaCat-iOS-G3.git", .upToNextMajor(from: "23.12.01"))
+    .package(url: "https://github.com/TeskaLabs/SeaCat-iOS-G3.git", .upToNextMajor(from: "24.24.01"))
 ]
 ```
 
 ### Swift Package Manager (via Xcode)
 
 Navigate Xcode`s top menu `File > Swift Packages > Add Package Dependency`. 
-Then in dialog use url __https://github.com/TeskaLabs/SeaCat-iOS-G3.git__ and version __23.12.01__.
+Then in dialog use url __https://github.com/TeskaLabs/SeaCat-iOS-G3.git__ and version __24.24.01__.
 
 ## Usage
 
