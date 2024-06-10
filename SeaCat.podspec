@@ -9,7 +9,7 @@
 Pod::Spec.new do |spec|
 
   spec.name         = "SeaCat"
-  spec.version      = "23.12.01"
+  spec.version      = "24.24.01"
   spec.summary      = "SeaCat SDK for iOS (3rd generation)."
   spec.description  = <<-DESC
   SeaCat cyber-security platform consists of a SeaCat SDK that is to be added into an mobile or IoT application, 
