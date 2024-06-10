@@ -28,7 +28,7 @@ public class SeaCat {
     }
     
     
-    // SeaCat Identity
+    /// SeaCat Identity
     
     public let identity: Identity
     
