@@ -44,7 +44,7 @@ public class Identity {
         timer?.invalidate()
 
         // Schedule a new timer
-        let interval = 6 * 60 * 60 // 6 hours in seconds
+        let interval = 60 * 5 // Check every 5 minutes
         timer = Timer.scheduledTimer(withTimeInterval: TimeInterval(interval), repeats: true) { [weak self] _ in
             self?.checkRenewal()
         }
@@ -84,6 +84,12 @@ public class Identity {
         guard status == errSecSuccess else {
             return false
         }
+
+        var certificatesToDelete = [SecCertificate]();
+
+        // Create a variable to store the most recent certificate
+        var mostRecentCertificate: SecCertificate?
+        var mostRecentNotAfter: Date?
         
         for item in (result as? Array<Dictionary<String, Any>>)! {
             let c = item["v_Ref"] as! SecCertificate
@@ -92,15 +98,40 @@ public class Identity {
                 continue
             }
             
-            //TODO: Other identity validations such as time validity
-            self.certificate = c
-            break
+            guard let validity = getCertificateValidity(c) else { continue }
+            
+            // Skip certificates with validity.notBefore in the future
+            if validity.notBefore > Date() {
+                continue
+            }
+            
+            // Check if the certificate is the most recent one
+            if mostRecentNotAfter == nil || validity.notAfter > mostRecentNotAfter! {
+                mostRecentCertificate = c
+                mostRecentNotAfter = validity.notAfter
+            }
+
+            // Collect certificates to delete
+            certificatesToDelete.append(c)
         }
         
+        self.certificate = mostRecentCertificate
         if self.certificate == nil {
             print("Identity certificate for \(private_key_identity) not found.")
             return false
         }
+        
+        certificatesToDelete = certificatesToDelete.filter { $0 != mostRecentCertificate }
+        
+        for certificate in certificatesToDelete {
+            deleteCertificate(certificate)
+        }
+
+// Uncomment for troubleshooting
+//        if (self.certificate != nil) {
+//            guard let validity = getCertificateValidity(self.certificate!) else { return false ;}
+//            print("Installed certificate", self.certificate!, validity)
+//        }
         
         //        NotificationCenter.default.post(
         //            name: Keyote.Notification.identitySet,
@@ -213,68 +244,18 @@ public class Identity {
     // Check validity of the identity certificate
     private func checkRenewal() {
         guard let certificate = self.certificate else { return }
+        guard let certValidity = getCertificateValidity(certificate) else { return }
         
-        // Parse notBefore and notAfter from the certificate
-        let data = SecCertificateCopyData(certificate) as Data
-        
-        guard let tbsCertificate = parseASN1SEQUENCE(input: data) else {
-            return;
-        }
-
-        guard let body = parseASN1SEQUENCE(input: tbsCertificate) else {
-            return;
-        }
-        
-        guard let (_, d1) = parseASN1Item(input: body) else {
-            return;
-        }
-        
-        guard let (_, d2) = parseASN1Item(input: d1) else {
-            return;
-        }
-
-        guard let (_, d3) = parseASN1Item(input: d2) else {
-            return;
-        }
-
-        guard let (_, d4) = parseASN1Item(input: d3) else {
-            return;
-        }
-
-        guard let (validitySeq, _) = parseASN1Item(input: d4) else {
-            return;
-        }
-
-        guard let validity = parseASN1SEQUENCE(input: validitySeq) else {
-            return;
-        }
-
-        guard let (notBeforeData, d5) = parseASN1Item(input: validity) else {
-            return;
-        }
-
-        guard let (notAfterData, _) = parseASN1Item(input: d5) else {
-            return;
-        }
-
-        guard let notBefore = parseASN1UTCTime(notBeforeData) else {
-            return;
-        }
-
-        guard let notAfter = parseASN1UTCTime(notAfterData) else {
-            return;
-        }
-
         let now = Date()
 
         // Calculate the halfway point of the certificate's valid period
-        let halfLife = (notAfter.timeIntervalSince1970 - notBefore.timeIntervalSince1970) / 2.0
+        let halfLife = (certValidity.notAfter.timeIntervalSince1970 - certValidity.notBefore.timeIntervalSince1970) / 2.0
         let thirtyDaysInSeconds: TimeInterval = 30 * 24 * 60 * 60 // ch 30 days
-
+        
         // Check if the current time is after half of the certificate's lifetime
         // or within 30 days of the certificate's expiration
-        if now.timeIntervalSince1970 > (notAfter.timeIntervalSince1970 - halfLife) ||
-           now.timeIntervalSince1970 > (notAfter.timeIntervalSince1970 - thirtyDaysInSeconds) {
+        if now.timeIntervalSince1970 > (certValidity.notAfter.timeIntervalSince1970 - halfLife) ||
+           now.timeIntervalSince1970 > (certValidity.notAfter.timeIntervalSince1970 - thirtyDaysInSeconds) {
             DispatchQueue.global(qos: .background).async {
                 self.renew()
             }
